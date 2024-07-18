@@ -1,10 +1,8 @@
 import urllib.parse
 import argparse
-from pym3u8downloader import M3U8Downloader
 import m3u8_To_MP4
 import requests
-import subprocess
-import os
+
 
 def split_url(full_url, split_marker="https://tv.volleyballworld.com/player?self-link="):
     """
@@ -99,6 +97,9 @@ def parse_arguments():
     """
     parser = argparse.ArgumentParser(description='download a vbtv replay')
     parser.add_argument('-url', type=str, help='url to download')
+    parser.add_argument('-path', type=str, help='path to save the video file', default='./')
+    #parser.add_argument('-path', type=str, help='path to save the video file', default='video')
+
     return parser.parse_args()
 
 
@@ -141,37 +142,32 @@ def fetch_m3u8_playlist(m3u8_url):
         return None
 
 
+def write_text_to_file(file_path, text):
+    """
+    Write text to a file.
+
+    Args:
+        file_path (str): Path to the output file.
+        text (str): Text to write to the file.
+    """
+    try:
+        with open(file_path, 'w') as file:
+            file.write(text)
+        print(f"Text successfully written to {file_path}")
+    except Exception as e:
+        print(f"Error writing to file: {e}")
 
 
 def main():
     args = parse_arguments()
-    print(args.url)
     json_url_encoded = split_url(args.url)
-    print(json_url_encoded)
     jason_url_decoded = decode_url(json_url_encoded)
-    print(jason_url_decoded)
     json_data = fetch_json(jason_url_decoded)
-    print(json_data)
     video_url = extract_video_url(json_data)
-    print(video_url)
-    playlist = fetch_m3u8_playlist(video_url)
-    print("playlist::" , playlist)
-    print(playlist[1][1])
-    url_m3u8 = playlist[1][1]
-    ts_list = requests.get(url_m3u8)
     print("Downloading video...")
-    print(ts_list.content)
-    downloader = M3U8Downloader(
-        input_file_path=video_url,
-        output_file_path="output_video"
-    )
-
-    print("---------", downloader.input_file_path)
-    downloader.download_playlist()
-
-    #m3u8_To_MP4.multithread_download(video_url, mp4_file_dir="./", mp4_file_name="video.mp4", tmpdir="./tmp")
-    # m3u8_To_MP4.async_download(video_url, mp4_file_dir="", mp4_file_name="video1.mp4", tmpdir="./tmp")
+    m3u8_To_MP4.multithread_download(video_url, mp4_file_dir=args.path, mp4_file_name="video")
     print("Download complete")
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
