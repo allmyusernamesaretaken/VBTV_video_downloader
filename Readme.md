@@ -30,6 +30,6 @@ I had an error where a file couldn't be found. like stated in this issue (https:
 ## Installation
 
 1. install ffmpeg by following the instructions on their website (https://ffmpeg.org/download.html)
-2. install the required python packages by running `pip install -r requirements.txt`
+2. install the other requirements
 3. maybe change the function in the `m3u8_To_MP4` package as described above
 4. run the script with `python main.py -url <url> -path <output_path>`
