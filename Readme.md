@@ -1,4 +1,4 @@
-# Python Project
+# VBTV video downloader
 
 ## Description
 
